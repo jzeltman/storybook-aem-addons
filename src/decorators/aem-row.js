@@ -1,9 +1,9 @@
 import React from 'react';
 
-const AEMRow = story => {
+const AEMRow = props => {
     return (
         <div className="root responsivegrid">
-            <div className="aem-Grid aem-Grid--12 aem-Grid--default--12 ">{story}</div>
+            <div className="aem-Grid aem-Grid--12 aem-Grid--default--12 ">{props.children}</div>
         </div>
     );
 }

@@ -4,19 +4,31 @@ import Centered from './centered';
 
 export class PageTemplate extends Component {
     render() {
-        if (typeof this.props.template === 'function') {
-            const Template = this.props.template;
-            return <Template>{this.props.children}</Template>;
-        } else return <div>{this.props.children}</div>;
+        switch(this.props.template) {
+            case 'Row':
+            case 'row':
+                return (
+                    <div className="template row">
+                        <AEMRow children={this.props.children} />
+                    </div>
+                );
+                break;
+            case 'centered':
+            case 'Centered':
+                return (
+                    <div className="template centered">
+                        <Centered children={this.props.children} />
+                    </div>
+                );
+                break;
+            default: 
+                return (
+                    <div className="template default">{this.props.children}</div>
+                );
+        }
     }
 }
 
-export const templates = {
-    'AEM Grid Row': AEMRow,
-    'Centered': Centered,
-}
-
 export default { 
-    PageTemplate,
-    templates
+    PageTemplate
 }

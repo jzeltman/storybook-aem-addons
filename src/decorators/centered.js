@@ -1,16 +1,17 @@
 import React from 'react';
 
-const Centered = story => {
-    const wrapperStyles = {
-
+const Centered = props => {
+    const parentStyles = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     };
-
-    const centeredStyles = {
-
-    }
+    const childStyles = {
+        margin: '1rem',
+    };
     return (
-        <div className="wrapper" style={wrapperStyles}>
-            <div className="centered" style={centeredStyles}>{story}</div>
+        <div className="wrapper" style={parentStyles}>
+            <div className="centered" style={childStyles}>{props.children}</div>
         </div>
     );
 }
