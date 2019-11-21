@@ -7,7 +7,8 @@ export default class Wrapper extends React.Component {
         this.getClasses.bind(this);
 
         this.state = {
-            html: props.html || null
+            html: props.html || null,
+            classes: this.getClasses(props)
         };
     }
 
@@ -24,23 +25,23 @@ export default class Wrapper extends React.Component {
         }
     }
 
-    getClasses() {
-        let classes = [this.props.classes];
-        if (this.props.grid) classes.push(this.props.grid);
-        if (this.props.gridTablet) classes.push(this.props.gridTablet);
-        if (this.props.gridPhone) classes.push(this.props.gridPhone);
-        if (this.props.styleSystem) classes.push(this.props.styleSystem);
-
+    getClasses(props) {
+        let classes = [];
+        if (props !== undefined) {
+            if (props.classes) classes.push(props.classes);
+            if (props.grid) classes.push(props.grid);
+            if (props.gridTablet) classes.push(props.gridTablet);
+            if (props.gridPhone) classes.push(props.gridPhone);
+            if (props.styleSystem) classes.push(props.styleSystem);
+        }
         return classes.join(' ');
     }
 
     render() {
-        let classes = this.getClasses();
-
+        let classes = this.getClasses(this.props);
         if (this.state.html === null) return <div className={classes}>Loading...</div>;
         else return (
-            <div className={classes}
-                    dangerouslySetInnerHTML={this.getMarkup(this.state.html)} />
+            <div className={classes} dangerouslySetInnerHTML={this.getMarkup(this.state.html)} />
         );
     }
 }
