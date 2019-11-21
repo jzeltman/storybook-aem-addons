@@ -21,6 +21,7 @@ export const groupDefault = 'Grid';
 // Tablet Breakpoint Grid options
 export const labelTablet = 'Grid - Tablet';
 export const optionsTablet = {
+    'None': '',
     '1 - One Column':     'aem-GridColumn--tablet--1',
     '2 - Two Column':     'aem-GridColumn--tablet--2',
     '3 - Three Column':   'aem-GridColumn--tablet--3',
@@ -34,13 +35,14 @@ export const optionsTablet = {
     '11 - Eleven Column': 'aem-GridColumn--tablet--11',
     '12 - Twelve Column': 'aem-GridColumn--tablet--12'
 };
-export const defaultTablet = 'aem-GridColumn--tablet--12';
+export const defaultTablet = '';
 export const groupTablet = 'Grid';
 
 
 // Phone Breakpoint Grid options
 export const labelPhone = 'Grid - Phone';
 export const optionsPhone = {
+    'None': '',
     '1 - One Column':     'aem-GridColumn--phone--1',
     '2 - Two Column':     'aem-GridColumn--phone--2',
     '3 - Three Column':   'aem-GridColumn--phone--3',
@@ -54,11 +56,31 @@ export const optionsPhone = {
     '11 - Eleven Column': 'aem-GridColumn--phone--11',
     '12 - Twelve Column': 'aem-GridColumn--phone--12'
 };
-export const defaultPhone = 'aem-GridColumn--phone--12';
+export const defaultPhone = '';
 export const groupPhone = 'Grid';
 
 
-export default { labelDefault, optionsDefault, defaultDefault, groupDefault };
-export const DefaultGrid = { labelDefault, optionsDefault, defaultDefault, groupDefault };
-export const TabletGrid = { labelTablet, optionsTablet, defaultTablet, groupTablet };
-export const PhoneGrid = { labelPhone, optionsPhone, defaultPhone, groupPhone };
+export default { 
+    label: labelDefault, 
+    options: optionsDefault, 
+    defaultValue: defaultDefault, 
+    group: groupDefault 
+};
+export const DefaultGrid = { 
+    label: labelDefault, 
+    options: optionsDefault, 
+    defaultValue: defaultDefault, 
+    group: groupDefault 
+};
+export const Tablet = { 
+    label: labelTablet, 
+    options: optionsTablet, 
+    defaultValue: defaultTablet, 
+    group: groupTablet 
+};
+export const Phone = { 
+    label: labelPhone, 
+    options: optionsPhone, 
+    defaultValue: defaultPhone, 
+    group: groupPhone 
+};

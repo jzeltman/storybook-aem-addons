@@ -1,6 +1,6 @@
 {
   "name": "storybook-aem-addons",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Addons for storybook-aem -> https://github.com/icfnext/storybook-aem",
   "main": "./lib/index.js",
   "repository": {
