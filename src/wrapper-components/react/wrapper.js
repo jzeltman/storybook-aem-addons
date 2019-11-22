@@ -34,6 +34,7 @@ export default class Wrapper extends React.Component {
             if (props.gridPhone) classes.push(props.gridPhone);
             if (props.styleSystem) classes.push(props.styleSystem);
         }
+        console.log('wrapper classes:', classes)
         return classes.join(' ');
     }
 
