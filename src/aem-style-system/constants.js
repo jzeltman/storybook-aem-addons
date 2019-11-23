@@ -1,6 +1,6 @@
 // addons, panels and events get unique names using a prefix
 export const PARAM_KEY = 'aemStyleSystem';
-export const ADDON_ID = 'storybookjs/aemStyleSystem';
+export const ADDON_ID = `storybookjs/${PARAM_KEY}`;
 export const PANEL_ID = `${ADDON_ID}/panel`;
 
 export const RESET = `${ADDON_ID}/reset`;

@@ -2,17 +2,28 @@ import React from 'react';
 import addons from '@storybook/addons';
 import Panel from './src/panel';
 import { ADDON_ID, PANEL_ID, PARAM_KEY } from './constants';
+import { useParameter } from '@storybook/api';
+import { AddonPanel, Placeholder } from '@storybook/components';
 
-console.log('register');
-
-const registerStyleSystem = () => {
-    addons.register(ADDON_ID, api => {
-        addons.addPanel(PANEL_ID, {
-            title: 'AEM Style System',
-            render: ({ active, key }) => <Panel api={api} key={key} active={active} />,
-            paramKey: PARAM_KEY,
-        });
-    })
-};
-
-export default registerStyleSystem();
+addons.register(ADDON_ID, api => {
+    addons.addPanel(PANEL_ID, {
+        title: 'Style System',
+        paramKey: PARAM_KEY,
+        render: ({ active, key }) => {
+            const parameters = useParameter(PARAM_KEY, null);
+            if (!parameters) {
+                return (
+                    <AddonPanel active={active} key={key}>
+                        <Placeholder>No Style System settings found</Placeholder>
+                    </AddonPanel>
+                );
+            } else {
+                return (
+                    <AddonPanel active={active} key={key}>
+                        <Panel api={api} parameters={parameters} />
+                    </AddonPanel>
+                );
+            }
+        }
+    });
+})

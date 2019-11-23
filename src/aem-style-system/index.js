@@ -1,12 +1,11 @@
-import addons, { makeDecorator } from '@storybook/addons';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
+import addons from '@storybook/addons';
 
+const channel = addons.getChannel();
 let classes = 'testing-style-system';
 
-const StyleSystem = (value) => {
-    classes = value || classes;
-    console.log('StyleSystem, classes:', classes)
+channel.on('aemStyleSystem:update', event => StyleSystem(event.classes));
+
+export const StyleSystem = (value) => {
+    if (value !== undefined) classes = value;
     return classes;
 }
-
-export default StyleSystem;

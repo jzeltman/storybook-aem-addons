@@ -18,7 +18,6 @@ export default class Wrapper extends React.Component {
 
     async componentDidMount() {
         if (this.props.contentPath) {
-            console.log('fetching component', this.props.contentPath);
             const response = await fetch(this.props.contentPath);
             const html = await response.text();
             this.setState({ html: html });
@@ -34,7 +33,6 @@ export default class Wrapper extends React.Component {
             if (props.gridPhone) classes.push(props.gridPhone);
             if (props.styleSystem) classes.push(props.styleSystem);
         }
-        console.log('wrapper classes:', classes)
         return classes.join(' ');
     }
 
