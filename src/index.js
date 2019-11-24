@@ -7,5 +7,5 @@ export {
     HTMLWrapper, 
     Wrapper,
     Classes,
-    Decorators
+    Decorators,
 }
