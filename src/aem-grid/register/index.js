@@ -1,7 +1,7 @@
 import React from 'react';
-import addons, { register, addPanel } from '@storybook/addons';
+import addons from '@storybook/addons';
 import Panel from './src/panel';
-import { ADDON_ID, PANEL_ID, PARAM_KEY } from './constants';
+import { ADDON_ID, PANEL_ID, PARAM_KEY } from '../constants';
 
 console.log('register grid');
 

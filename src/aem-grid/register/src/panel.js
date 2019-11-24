@@ -1,7 +1,6 @@
-import React, { Component, useDebugValue } from 'react';
+import React, { Component } from 'react';
 import { AddonPanel, Form } from '@storybook/components';
-import { PARAM_KEY } from '../constants';
-import Breakpoints from '../breakpoints';
+import Breakpoints from './breakpoints';
 import { FORCE_RE_RENDER } from '@storybook/core-events';
 
 // add a way to customize the grid
