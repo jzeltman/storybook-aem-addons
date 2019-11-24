@@ -1,7 +1,6 @@
-
 import React, { Component } from 'react';
 import { Form, Placeholder, ScrollArea, TabWrapper, TabState, Tabs, TabBar, TabButton } from '@storybook/components';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
+import { FORCE_RE_RENDER, STORY_CHANGED } from '@storybook/core-events';
 import { parsePolicy } from './utils';
 
 // add a way to customize the grid
@@ -10,15 +9,28 @@ export default class Panel extends Component {
         super();
         this.api = props.api;
         this.channel = this.api.getChannel();
+        this.channel.on(STORY_CHANGED, this.storyChangedHandler.bind(this));
+
         this.state = { 
             policyPath: props.parameters.policy || null,
             policy: null,
             classes: [],
             policyJSON: []
+        };
+    }
+
+    storyChangedHandler(event) {
+        if (this.props.parameters && this.props.parameters.policy && this.props.parameters.policy !== this.state.policyPath) {
+            this.setState({ policyPath: this.props.parameters.policy });
+            this.fetchComponentPolicy();
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.fetchComponentPolicy();
+    }
+
+    async fetchComponentPolicy() {
         if (this.state.policyPath) {
             const response = await fetch(this.state.policyPath);
             const policyJSON = await response.json();
