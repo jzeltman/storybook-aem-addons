@@ -14,8 +14,9 @@ export default class Panel extends Component {
         this.state = { 
             policyPath: props.parameters.policy || null,
             policy: null,
-            classes: [],
-            policyJSON: []
+            policyJSON: [],
+            styleIdKeyValues: {},
+            styleIds: props.parameters.styleIds || []
         };
     }
 
@@ -23,6 +24,10 @@ export default class Panel extends Component {
         if (this.props.parameters && this.props.parameters.policy && this.props.parameters.policy !== this.state.policyPath) {
             this.setState({ policyPath: this.props.parameters.policy });
             this.fetchComponentPolicy();
+        }
+        if (this.props.parameters && this.props.parameters.styleIds && this.props.parameters.styleIds !== this.state.styleIds) {
+            this.setState({ styleIds: this.props.parameters.styleIds });
+            this.renderStory(this.props.parameters.styleIds);
         }
     }
 
@@ -34,19 +39,32 @@ export default class Panel extends Component {
         if (this.state.policyPath) {
             const response = await fetch(this.state.policyPath);
             const policyJSON = await response.json();
-            this.setState({ policyJSON: parsePolicy(policyJSON) });
+            const parsedPolicy = parsePolicy(policyJSON);
+            this.setState({ 
+                policyJSON: policyJSON,
+                policy: parsedPolicy.policy,
+                styleIdKeyValues: parsedPolicy.styleIdKeyValues
+            });
         }
     }
 
-    setClasses(event, passedClass) {
-        let classes = [...this.state.classes];
-        let index = classes.indexOf(passedClass)
-        if (index === -1) classes.push(passedClass);
-        else classes.splice(index, 1);
+    getClassesFromStyleIds(styleIds) {
+        return (styleIds || this.state.styleIds).map( id => this.state.styleIdKeyValues[id] );
+    }
 
-        this.setState({ classes });
-        
-        this.channel.emit('aemStyleSystem:update', { classes: classes.join(' ') });
+    setStyleIds(id) {
+        let ids = [...this.state.styleIds];
+        let index = ids.indexOf(id)
+        if (index === -1) ids.push(id);
+        else ids.splice(index, 1);
+
+        this.setState({ styleIds: ids });
+        this.renderStory(ids);
+    }
+
+    renderStory(passedIds) {
+        const styleIds = passedIds || this.state.styleIds;
+        this.channel.emit('aemStyleSystem:update', { classes: this.getClassesFromStyleIds(styleIds).join(' ') });
         this.channel.emit(FORCE_RE_RENDER);
     }
 
@@ -54,11 +72,11 @@ export default class Panel extends Component {
         return (
             <div key={groupKey}>
                 <h3>{group.styleGroupLabel}</h3>
-                <Form>{group.styles.map((style,styleKey) => 
-                    <Form.Field key={styleKey} label={style.label}>
-                        <input type="checkbox" 
-                                value={style.classes} 
-                                onChange={e => this.setClasses(e, style.classes)} />
+                <Form>{group.styles.map((style,styleKey) => <Form.Field key={styleKey} label={style.label}>
+                        <input  type="checkbox" 
+                                value={style.id}
+                                checked={this.state.styleIds.includes(style.id)}
+                                onChange={e => this.setStyleIds(style.id)} />
                     </Form.Field>
                 )}</Form>
             </div>
@@ -66,7 +84,7 @@ export default class Panel extends Component {
     }
 
     renderPolicies() {
-        return this.state.policyJSON.map((policy,key) => {
+        return this.state.policy.map((policy,key) => {
             return (
                 <div key={key}>
                     <h2>{policy.tabName}</h2>
@@ -78,8 +96,8 @@ export default class Panel extends Component {
     }
 
     render() {
-        if (this.state.policyPath === null) return <Placeholder>No Style System Policy Path configured</Placeholder>
-        else if (this.state.policyJSON.length) {
+        if (this.state.policy === null) return <Placeholder>No Style System Policy Path configured</Placeholder>
+        else if (this.state.policy.length) {
             return (
                 <ScrollArea>{this.renderPolicies()}</ScrollArea>
             )

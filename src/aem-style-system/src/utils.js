@@ -1,6 +1,7 @@
 export const parsePolicy = (policyJSON) => {
     const policies = Object.keys(policyJSON);
     const policyArray = [];
+    const styleIdKeyValues = {};
 
     policies.forEach( policyKey => {
         if (policyKey !== 'jcr:primaryType') {
@@ -26,11 +27,14 @@ export const parsePolicy = (policyJSON) => {
                             let option = styleGroup['cq:styles'][optionKey];
                             if (optionKey !== 'jcr:primaryType') {
                                 stylesArray.push({
+                                    group: styleGroup['cq:styleGroupLabel'],
                                     classes: option['cq:styleClasses'],
-                                    label: option['cq:styleLabel']
+                                    label: option['cq:styleLabel'],
+                                    id: option['cq:styleId']
                                 });
+                                styleIdKeyValues[option['cq:styleId']] = option['cq:styleClasses'];
                             }
-                        })
+                        });
 
                         if (stylesKeys.length) {
                             policyObject.styleGroups.push({
@@ -47,5 +51,8 @@ export const parsePolicy = (policyJSON) => {
         }
     });
 
-    return policyArray;
+    return { 
+        policy: policyArray,
+        styleIdKeyValues: styleIdKeyValues
+    };
 }
