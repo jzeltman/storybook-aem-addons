@@ -1,9 +1,9 @@
 import React from 'react';
 import addons from '@storybook/addons';
-import Panel from './src/panel';
-import { ADDON_ID, PANEL_ID, PARAM_KEY } from './constants';
 import { useParameter } from '@storybook/api';
 import { AddonPanel, Placeholder } from '@storybook/components';
+import Panel from './src/panel';
+import { ADDON_ID, PANEL_ID, PARAM_KEY } from '../constants';
 
 addons.register(ADDON_ID, api => {
     addons.addPanel(PANEL_ID, {
