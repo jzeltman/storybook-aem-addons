@@ -22,6 +22,9 @@ export default class Wrapper extends React.Component {
             const html = await response.text();
             this.setState({ html: html });
         }
+        if (this.props.didMountCallback && typeof this.props.didMountCallback === 'function') {
+            this.props.didMountCallback();
+        }
     }
 
     getClasses(props) {

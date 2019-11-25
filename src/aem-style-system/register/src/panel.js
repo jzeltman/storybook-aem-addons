@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { Form, Placeholder, ScrollArea, TabWrapper, TabState, Tabs, TabBar, TabButton } from '@storybook/components';
+import React, { Component, Fragment } from 'react';
+import { Form, Placeholder, ScrollArea, FlexBar, Separator } from '@storybook/components';
 import { FORCE_RE_RENDER, STORY_CHANGED } from '@storybook/core-events';
 import { parsePolicy } from './utils';
 
-// add a way to customize the grid
 export default class Panel extends Component {
     constructor(props){
         super();
@@ -16,7 +15,8 @@ export default class Panel extends Component {
             policy: null,
             policyJSON: [],
             styleIdKeyValues: {},
-            styleIds: props.parameters.styleIds || []
+            styleIds: props.parameters.styleIds || [],
+            loading: true
         };
     }
 
@@ -37,10 +37,12 @@ export default class Panel extends Component {
 
     async fetchComponentPolicy() {
         if (this.state.policyPath) {
+            this.setState({ loading: true })
             const response = await fetch(this.state.policyPath);
             const policyJSON = await response.json();
             const parsedPolicy = parsePolicy(policyJSON);
             this.setState({ 
+                loading: false,
                 policyJSON: policyJSON,
                 policy: parsedPolicy.policy,
                 styleIdKeyValues: parsedPolicy.styleIdKeyValues
@@ -68,39 +70,51 @@ export default class Panel extends Component {
         this.channel.emit(FORCE_RE_RENDER);
     }
 
-    renderStyleGroup(group,groupKey) {
-        return (
-            <div key={groupKey}>
-                <h3>{group.styleGroupLabel}</h3>
-                <Form>{group.styles.map((style,styleKey) => <Form.Field key={styleKey} label={style.label}>
-                        <input  type="checkbox" 
-                                value={style.id}
-                                checked={this.state.styleIds.includes(style.id)}
-                                onChange={e => this.setStyleIds(style.id)} />
-                    </Form.Field>
-                )}</Form>
-            </div>
-        )
+    renderStyleGroup(policies) {
+        return policies.styleGroups.map((group,policyKey) =>{
+            return (
+                <div key={policyKey} style={{borderRight:'1px solid #aaa',flexBasis:0,flexGrow:1}}>
+                    <FlexBar border>
+                        <p><b>{group.styleGroupLabel}</b></p>
+                    </FlexBar>
+                    <Form>{group.styles.map((style,styleKey) => 
+                        <Form.Field key={styleKey} label={style.label} style={{justifyContent:'space-between'}}>
+                            <input  type="checkbox" 
+                                    value={style.id}
+                                    checked={this.state.styleIds.includes(style.id)}
+                                    onChange={e => this.setStyleIds(style.id)} />
+                        </Form.Field>
+                    )}</Form>
+                </div>
+            )
+        });
     }
 
-    renderPolicies() {
-        return this.state.policy.map((policy,key) => {
-            return (
-                <div key={key}>
-                    <h2>{policy.tabName}</h2>
-                    <p>{policy.tabDescription}</p>
-                    {policy.styleGroups.map((policy,policyKey) => this.renderStyleGroup(policy,policyKey))}
-                </div>
-            );
-        });
+    renderPolicy(policy,key) {
+        key = key || policy.tabName;
+        return (
+            <div key={key} className="render-policy">
+                <FlexBar border>
+                    <Fragment key="left">
+                        <p><b>{policy.tabName}</b></p>
+                        <Separator />
+                        <p><i>{policy.tabDescription}</i></p>
+                    </Fragment>
+                </FlexBar>
+                <ScrollArea style={{position:'absolute',width:'100%',height:'100%'}}>
+                    <div style={{position:'relative',display:'flex',alignItems:'stretch'}}>
+                        {this.renderStyleGroup(policy)}
+                    </div>
+                </ScrollArea>
+            </div>
+        );
     }
 
     render() {
         if (this.state.policy === null) return <Placeholder>No Style System Policy Path configured</Placeholder>
-        else if (this.state.policy.length) {
-            return (
-                <ScrollArea>{this.renderPolicies()}</ScrollArea>
-            )
-        } else return <Placeholder>Fetching Style System Policy</Placeholder>
+        else if (this.state.loading) return <Placeholder>Fetching Style System Policy</Placeholder>
+        else if (this.state.policy.length === 0) return <Placeholder>No Styles found in Style System Policy</Placeholder>
+        else if (this.state.policy.length === 1) return this.renderPolicy(this.state.policy[0]);
+        else return <div>{this.state.policy.map((policy,key) => this.renderPolicy(policy,key))}</div>;
     }
 }
